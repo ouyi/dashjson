@@ -3,7 +3,7 @@
 import logging, argparse, json
 from datadog import initialize, api
 
-def loadjson(f):
+def load_json(f):
     with open(f, 'r') as json_file:
         json_str = json_file.read()
         json_obj = json.loads(json_str)
@@ -46,10 +46,10 @@ def main():
        parser.print_help()
        sys.exit(1)
 
-    authenticate(loadjson(args.credentials))
+    authenticate(load_json(args.credentials))
 
     if args.import_file:
-        import_json(loadjson(args.import_file), args.dash_type)
+        import_json(load_json(args.import_file), args.dash_type)
     elif args.export_file and args.dash_id:
         export_json(args.dash_id, args.export_file, args.dash_type)
 
