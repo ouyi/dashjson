@@ -12,14 +12,20 @@ def load_json(f):
 def authenticate(cred_json):
     initialize(**cred_json)
 
-def import_json(dash_json, t):
+def import_json(dash_json, t, update):
     if t == "t":
         timeboard_json = dash_json['dash']
         title, description, graphs = timeboard_json['title'], timeboard_json['description'], timeboard_json['graphs']
-        api.Timeboard.create(title=title, description=description, graphs=graphs)
+        if update:
+            api.Timeboard.update(timeboard_json['id'], title=title, description=description, graphs=graphs)
+        else:
+            api.Timeboard.create(title=title, description=description, graphs=graphs)
     else:
         board_title, description, widgets = dash_json['board_title'], dash_json['description'], dash_json['widgets']
-        api.Screenboard.create(board_title=board_title, description=description, widgets=widgets)
+        if update:
+           raise Exception('Update not supported for screenboards')
+        else:
+            api.Screenboard.create(board_title=board_title, description=description, widgets=widgets)
 
 def export_json(dash_id, f, t):
     dash_json = api.Timeboard.get(dash_id) if t == "t" else api.Screenboard.get(dash_id)
@@ -40,6 +46,7 @@ def main():
     mutex_group.add_argument("-e", "--export_file", help="the json file to export dashboard definition to")
     parser.add_argument("-d", "--dash_id", help="the id of the dashboard to be exported")
     parser.add_argument("-t", "--dash_type", choices=['t', 's'], default='t', help="the type of the dashboard to be imported or exported")
+    parser.add_argument("-u", "--update", default=True, help="update an existing timeboard (used in combination with -i, not supported for screenboards")
     args = parser.parse_args()
 
     if args.export_file and not args.dash_id:
@@ -49,7 +56,7 @@ def main():
     authenticate(load_json(args.credentials))
 
     if args.import_file:
-        import_json(load_json(args.import_file), args.dash_type)
+        import_json(load_json(args.import_file), args.dash_type, args.update)
     elif args.export_file and args.dash_id:
         export_json(args.dash_id, args.export_file, args.dash_type)
 
