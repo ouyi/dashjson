@@ -31,7 +31,7 @@ def main():
     logging.basicConfig(level=logging.INFO)
     parser = argparse.ArgumentParser(description=
     """
-    A tool for importing datadog dashboards from json files and exporting them to json files.
+    A tool for exporting (or importing) datadog dashboards to (or from) json files.
     """
     )
     parser.add_argument("-c", "--credentials", required=True, help="the json file containing api_key and app_key as dictionary entries")
