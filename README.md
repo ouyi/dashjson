@@ -1,3 +1,7 @@
+# datadog tool dashjson.py
+
+A tool for exporting (or importing) datadog dashboards to (or from) json
+
 <pre>
 usage: dashjson.py [-h] -c CREDENTIALS (-i IMPORT_FILE | -e EXPORT_FILE)
                    [-d DASH_ID] [-t {t,s}]
