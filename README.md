@@ -1,3 +1,4 @@
+<pre>
 usage: dashjson.py [-h] -c CREDENTIALS (-i IMPORT_FILE | -e EXPORT_FILE)
                    [-d DASH_ID] [-t {t,s}]
 
@@ -17,3 +18,4 @@ optional arguments:
                         the id of the dashboard to be exported
   -t {t,s}, --dash_type {t,s}
                         the type of the dashboard to be imported or exported
+</pre>
