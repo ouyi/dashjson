@@ -45,8 +45,8 @@ def main():
     mutex_group.add_argument("-i", "--import_file", help="the json file to import dashboard definition from")
     mutex_group.add_argument("-e", "--export_file", help="the json file to export dashboard definition to")
     parser.add_argument("-d", "--dash_id", help="the id of the dashboard to be exported")
-    parser.add_argument("-t", "--dash_type", choices=['t', 's'], default='t', help="the type of the dashboard to be imported or exported")
-    parser.add_argument("-u", "--update", default=True, help="update an existing timeboard (used in combination with -i, not supported for screenboards")
+    parser.add_argument("-t", "--dash_type", choices=['t', 's'], default='t', help="the type of the dashboard (t for timeboard and s for screenboard) to be imported or exported")
+    parser.add_argument("-u", "--update", default=True, help="update an existing timeboard (used in combination with -i, not supported for screenboards)")
     args = parser.parse_args()
 
     if args.export_file and not args.dash_id:

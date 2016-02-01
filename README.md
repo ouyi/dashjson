@@ -4,7 +4,7 @@ A tool for exporting (or importing) datadog dashboards to (or from) json
 
 <pre>
 usage: dashjson.py [-h] -c CREDENTIALS (-i IMPORT_FILE | -e EXPORT_FILE)
-                   [-d DASH_ID] [-t {t,s}]
+                   [-d DASH_ID] [-t {t,s}] [-u UPDATE]
 
 A tool for exporting (or importing) datadog dashboards to (or from) json
 files.
@@ -21,5 +21,9 @@ optional arguments:
   -d DASH_ID, --dash_id DASH_ID
                         the id of the dashboard to be exported
   -t {t,s}, --dash_type {t,s}
-                        the type of the dashboard to be imported or exported
+                        the type of the dashboard (t for timeboard and s for
+                        screenboard) to be imported or exported
+  -u UPDATE, --update UPDATE
+                        update an existing timeboard (used in combination with
+                        -i, not supported for screenboards)
 </pre>
