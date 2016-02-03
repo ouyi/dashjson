@@ -47,7 +47,7 @@ def main():
     - Import from json
     # python dashjson.py -c ~/.dd-cred.json -i cool-graphs.json
 
-    - Example sontent of the credentials file (your keys can be found at https://app.datadoghq.com/account/settings#api)
+    - Example content of the credentials file (your keys can be found at https://app.datadoghq.com/account/settings#api)
     # cat -c ~/.dd-cred.json
     {
         "api_key": "abcdefg12345678",
