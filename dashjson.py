@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import logging, argparse, json
+import sys, logging, argparse, json
 from datadog import initialize, api
 
 def load_json(f):
