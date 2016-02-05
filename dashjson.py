@@ -42,10 +42,10 @@ def main():
     Examples
 
     - Export to json
-    # python dashjson.py -e cool-graphs.json -d 12345
+    # python dashjson.py -e mydashboard.json -d 12345
 
     - Import from json
-    # python dashjson.py -i cool-graphs.json
+    # python dashjson.py -i mydashboard.json
 
     - Example content of the credentials file (your keys can be found at https://app.datadoghq.com/account/settings#api)
     # cat ~/.dashjson.json
