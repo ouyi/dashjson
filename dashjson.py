@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import sys, logging, argparse, json
+import sys, logging, argparse, json, os.path
 from datadog import initialize, api
 
 def load_json(f):
@@ -42,20 +42,20 @@ def main():
     Examples
 
     - Export to json
-    # python dashjson.py -c ~/.dd-cred.json -e cool-graphs.json -d 12345
+    # python dashjson.py -e cool-graphs.json -d 12345
 
     - Import from json
-    # python dashjson.py -c ~/.dd-cred.json -i cool-graphs.json
+    # python dashjson.py -i cool-graphs.json
 
     - Example content of the credentials file (your keys can be found at https://app.datadoghq.com/account/settings#api)
-    # cat -c ~/.dd-cred.json
+    # cat ~/.dashjson.json
     {
         "api_key": "abcdefg12345678",
         "app_key": "abcdefg987654321"
     }
     """, formatter_class=argparse.RawTextHelpFormatter
     )
-    parser.add_argument("-c", "--credentials", required=True, help="the json file containing api_key and app_key as dictionary entries")
+    parser.add_argument("-c", "--credentials", default=os.path.join(os.path.expanduser('~'), '.dashjson.json'), help="the json file containing api_key and app_key as dictionary entries, defaults to ~/.dashjson.json")
     mutex_group = parser.add_mutually_exclusive_group(required=True)
     mutex_group.add_argument("-i", "--import_file", help="the json file to import dashboard definition from")
     mutex_group.add_argument("-e", "--export_file", help="the json file to export dashboard definition to")
