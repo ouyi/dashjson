@@ -2,6 +2,7 @@
 
 import sys, logging, argparse, json, os.path
 from datadog import initialize, api
+from abc import ABCMeta, abstractmethod
 
 def load_json(f):
     with open(f, 'r') as json_file:
@@ -9,29 +10,40 @@ def load_json(f):
         json_obj = json.loads(json_str)
         return json_obj
 
+def dump_json(dash_json, f):
+    with open(f, 'w') as json_file:
+        json.dump(dash_json, json_file, indent=4)
+
 def authenticate(cred_json):
     initialize(**cred_json)
 
-def import_json(dash_json, t, update):
-    if t == "t":
+class DashboardHandler(object):
+    __metaclass__ = ABCMeta
+    @abstractmethod
+    def import_json(self, dash_json, update): pass
+    @abstractmethod
+    def export_json(self, dash_id): pass
+
+class TimeboardHandler(DashboardHandler):
+    def import_json(self, dash_json, update):
         timeboard_json = dash_json['dash']
         title, description, graphs = timeboard_json['title'], timeboard_json['description'], timeboard_json['graphs']
         if update:
             api.Timeboard.update(timeboard_json['id'], title=title, description=description, graphs=graphs)
         else:
             api.Timeboard.create(title=title, description=description, graphs=graphs)
-    else:
+    def export_json(self, dash_id):
+        return api.Timeboard.get(dash_id)
+
+class ScreenboardHandler(DashboardHandler):
+    def import_json(self, dash_json, update):
         board_title, description, widgets = dash_json['board_title'], dash_json['description'], dash_json['widgets']
         if update:
            raise Exception('Update not supported for screenboards')
         else:
             api.Screenboard.create(board_title=board_title, description=description, widgets=widgets)
-
-def export_json(dash_id, f, t):
-    dash_json = api.Timeboard.get(dash_id) if t == "t" else api.Screenboard.get(dash_id)
-    if dash_json:
-        with open(f, 'w') as json_file:
-            json.dump(dash_json, json_file, indent=4)
+    def export_json(self, dash_id):
+        return api.Screenboard.get(dash_id)
 
 def main():
     logging.basicConfig(level=logging.INFO)
@@ -72,10 +84,12 @@ def main():
 
     authenticate(load_json(args.credentials))
 
+    handler = TimeboardHandler() if args.dash_type == 't' else ScreenboardHandler()
+
     if args.import_file:
-        import_json(load_json(args.import_file), args.dash_type, args.update)
-    elif args.export_file and args.dash_id:
-        export_json(args.dash_id, args.export_file, args.dash_type)
+        handler.import_json(load_json(args.import_file), args.update)
+    elif args.export_file:
+        dump_json(handler.export_json(args.dash_id), args.export_file)
 
 if __name__ == "__main__":
     main()
