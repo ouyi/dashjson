@@ -27,11 +27,14 @@ class DashboardHandler(object):
 class TimeboardHandler(DashboardHandler):
     def import_json(self, dash_json, update):
         timeboard_json = dash_json['dash']
+        # required fields
         title, description, graphs = timeboard_json['title'], timeboard_json['description'], timeboard_json['graphs']
+        # optional fields
+        template_variables = timeboard_json.get('template_variables', [])
         if update:
-            api.Timeboard.update(timeboard_json['id'], title=title, description=description, graphs=graphs)
+            api.Timeboard.update(timeboard_json['id'], title=title, description=description, graphs=graphs, template_variables=template_variables)
         else:
-            api.Timeboard.create(title=title, description=description, graphs=graphs)
+            api.Timeboard.create(title=title, description=description, graphs=graphs, template_variables=template_variables)
     def export_json(self, dash_id):
         return api.Timeboard.get(dash_id)
 
