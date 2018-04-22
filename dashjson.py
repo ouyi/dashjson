@@ -40,11 +40,14 @@ class TimeboardHandler(DashboardHandler):
 
 class ScreenboardHandler(DashboardHandler):
     def import_json(self, dash_json, update):
-        board_title, description, widgets = dash_json['board_title'], dash_json['description'], dash_json['widgets']
+        # required fields
+        board_title, widgets = dash_json['board_title'], dash_json['widgets']
+        # optional fields
+        template_variables = dash_json.get('template_variables', [])
         if update:
            raise Exception('Update not supported for screenboards')
         else:
-            api.Screenboard.create(board_title=board_title, description=description, widgets=widgets)
+            api.Screenboard.create(board_title=board_title, widgets=widgets, template_variables=template_variables)
     def export_json(self, dash_id):
         return api.Screenboard.get(dash_id)
 
