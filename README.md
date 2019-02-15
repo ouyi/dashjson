@@ -5,6 +5,8 @@ A tool for exporting (or importing) Datadog dashboards to (or from) json. It all
 - version controlled as json files, and
 - migrated across Datadog accounts
 
+## How to use
+
 <pre>
 usage: dashjson.py [-h] [-c CREDENTIALS] (-i IMPORT_FILE | -e EXPORT_FILE)
                    [-d DASH_ID] [-t {t,s}] [-u] [-n]
@@ -44,3 +46,22 @@ optional arguments:
   -u, --update          update an existing timeboard (used in combination with -i, default for Timeboards, not supported for screenboards))
   -n, --no-update       create a new dashboard (used in combination with -i)
 </pre>
+
+## How to build (for contributors only)
+
+These are the steps I used on Ubuntu 18.04.
+
+Add the following line to `~/.bashrc` (to avoid [this issue](https://github.com/pypa/pipenv/issues/2122)):
+
+    export PATH="${HOME}/.local/bin:$PATH"
+
+Install pip and pipenv:
+
+    sudo apt install python3-pip
+    python3 -m pip install --user pipenv
+
+Clone and install locally:
+
+    git clone git@github.com:ouyi/dashjson.git
+    cd dashjson
+    pipenv install --dev
