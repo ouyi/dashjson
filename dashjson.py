@@ -31,9 +31,6 @@ class DashboardHandler(object):
 
 class TimeboardHandler(DashboardHandler):
 
-    def __init__(self, api):
-        super().__init__(api)
-
     def import_json(self, dash_json, update):
         timeboard_json = dash_json['dash']
         # required fields
@@ -48,9 +45,6 @@ class TimeboardHandler(DashboardHandler):
         return self.api.get(dash_id)
 
 class ScreenboardHandler(DashboardHandler):
-
-    def __init__(self, api):
-        super().__init__(api)
 
     def import_json(self, dash_json, update):
         # required fields
