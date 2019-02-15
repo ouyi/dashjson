@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import sys, logging, argparse, json, os.path
-from datadog import initialize, api
+from datadog import initialize as dd_init, api as dd_api
 from abc import ABCMeta, abstractmethod
 
 def load_json(f):
@@ -15,17 +15,19 @@ def dump_json(dash_json, f):
         json.dump(dash_json, json_file, indent=4)
 
 def authenticate(cred_json):
-    initialize(**cred_json)
+    dd_init(**cred_json)
 
 class DashboardHandler(object):
     __metaclass__ = ABCMeta
+
     @abstractmethod
-    def import_json(self, dash_json, update): pass
+    def import_json(self, api, dash_json, update): pass
+
     @abstractmethod
-    def export_json(self, dash_id): pass
+    def export_json(self, api, dash_id): pass
 
 class TimeboardHandler(DashboardHandler):
-    def import_json(self, dash_json, update):
+    def import_json(self, api, dash_json, update):
         timeboard_json = dash_json['dash']
         # required fields
         title, description, graphs = timeboard_json['title'], timeboard_json['description'], timeboard_json['graphs']
@@ -35,11 +37,11 @@ class TimeboardHandler(DashboardHandler):
             api.Timeboard.update(timeboard_json['id'], title=title, description=description, graphs=graphs, template_variables=template_variables)
         else:
             api.Timeboard.create(title=title, description=description, graphs=graphs, template_variables=template_variables)
-    def export_json(self, dash_id):
+    def export_json(self, api, dash_id):
         return api.Timeboard.get(dash_id)
 
 class ScreenboardHandler(DashboardHandler):
-    def import_json(self, dash_json, update):
+    def import_json(self, api, dash_json, update):
         # required fields
         board_title, widgets = dash_json['board_title'], dash_json['widgets']
         # optional fields
@@ -48,7 +50,7 @@ class ScreenboardHandler(DashboardHandler):
            raise Exception('Update not supported for screenboards')
         else:
             api.Screenboard.create(board_title=board_title, widgets=widgets, template_variables=template_variables)
-    def export_json(self, dash_id):
+    def export_json(self, api, dash_id):
         return api.Screenboard.get(dash_id)
 
 def main():
@@ -95,9 +97,9 @@ def main():
     handler = TimeboardHandler() if args.dash_type == 't' else ScreenboardHandler()
 
     if args.import_file:
-        handler.import_json(load_json(args.import_file), args.update)
+        handler.import_json(dd_api, load_json(args.import_file), args.update)
     elif args.export_file:
-        dump_json(handler.export_json(args.dash_id), args.export_file)
+        dump_json(handler.export_json(dd_api, args.dash_id), args.export_file)
 
 if __name__ == "__main__":
     main()
