@@ -20,28 +20,39 @@ def authenticate(cred_json):
 class DashboardHandler(object):
     __metaclass__ = ABCMeta
 
-    @abstractmethod
-    def import_json(self, api, dash_json, update): pass
+    def __init__(self, api):
+        self.api = api
 
     @abstractmethod
-    def export_json(self, api, dash_id): pass
+    def import_json(self, dash_json, update): pass
+
+    @abstractmethod
+    def export_json(self, dash_id): pass
 
 class TimeboardHandler(DashboardHandler):
-    def import_json(self, api, dash_json, update):
+
+    def __init__(self, api):
+        super().__init__(api)
+
+    def import_json(self, dash_json, update):
         timeboard_json = dash_json['dash']
         # required fields
         title, description, graphs = timeboard_json['title'], timeboard_json['description'], timeboard_json['graphs']
         # optional fields
         template_variables = timeboard_json.get('template_variables', [])
         if update:
-            api.Timeboard.update(timeboard_json['id'], title=title, description=description, graphs=graphs, template_variables=template_variables)
+            self.api.Timeboard.update(timeboard_json['id'], title=title, description=description, graphs=graphs, template_variables=template_variables)
         else:
-            api.Timeboard.create(title=title, description=description, graphs=graphs, template_variables=template_variables)
-    def export_json(self, api, dash_id):
-        return api.Timeboard.get(dash_id)
+            self.api.Timeboard.create(title=title, description=description, graphs=graphs, template_variables=template_variables)
+    def export_json(self, dash_id):
+        return self.api.Timeboard.get(dash_id)
 
 class ScreenboardHandler(DashboardHandler):
-    def import_json(self, api, dash_json, update):
+
+    def __init__(self, api):
+        super().__init__(api)
+
+    def import_json(self, dash_json, update):
         # required fields
         board_title, widgets = dash_json['board_title'], dash_json['widgets']
         # optional fields
@@ -49,9 +60,9 @@ class ScreenboardHandler(DashboardHandler):
         if update:
            raise Exception('Update not supported for screenboards')
         else:
-            api.Screenboard.create(board_title=board_title, widgets=widgets, template_variables=template_variables)
-    def export_json(self, api, dash_id):
-        return api.Screenboard.get(dash_id)
+            self.api.Screenboard.create(board_title=board_title, widgets=widgets, template_variables=template_variables)
+    def export_json(self, dash_id):
+        return self.api.Screenboard.get(dash_id)
 
 def main():
     logging.basicConfig(level=logging.INFO)
@@ -94,12 +105,12 @@ def main():
 
     authenticate(load_json(args.credentials))
 
-    handler = TimeboardHandler() if args.dash_type == 't' else ScreenboardHandler()
+    handler = TimeboardHandler(dd_api) if args.dash_type == 't' else ScreenboardHandler(dd_api)
 
     if args.import_file:
-        handler.import_json(dd_api, load_json(args.import_file), args.update)
+        handler.import_json(load_json(args.import_file), args.update)
     elif args.export_file:
-        dump_json(handler.export_json(dd_api, args.dash_id), args.export_file)
+        dump_json(handler.export_json(args.dash_id), args.export_file)
 
 if __name__ == "__main__":
     main()
