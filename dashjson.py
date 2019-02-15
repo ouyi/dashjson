@@ -79,7 +79,7 @@ def main():
     mutex_group = parser.add_mutually_exclusive_group(required=True)
     mutex_group.add_argument("-i", "--import_file", help="the json file to import dashboard definition from")
     mutex_group.add_argument("-e", "--export_file", help="the json file to export dashboard definition to")
-    parser.add_argument("-d", "--dash_id", type=int, help="the id of the dashboard to be exported")
+    parser.add_argument("-d", "--dash_id", help="the id of the dashboard to be exported")
     parser.add_argument("-t", "--dash_type", choices=['t', 's'], default='t', help="the type of the dashboard (t for timeboard and s for screenboard) to be imported or exported, default to t")
     parser.add_argument("-u", "--update", dest='update', action='store_true', help="update an existing timeboard (used in combination with -i, default for Timeboards, not supported for screenboards))")
     parser.add_argument("-n", "--no-update", dest='update', action='store_false', help="create a new dashboard (used in combination with -i)")
