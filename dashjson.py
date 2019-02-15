@@ -41,11 +41,11 @@ class TimeboardHandler(DashboardHandler):
         # optional fields
         template_variables = timeboard_json.get('template_variables', [])
         if update:
-            self.api.Timeboard.update(timeboard_json['id'], title=title, description=description, graphs=graphs, template_variables=template_variables)
+            self.api.update(timeboard_json['id'], title=title, description=description, graphs=graphs, template_variables=template_variables)
         else:
-            self.api.Timeboard.create(title=title, description=description, graphs=graphs, template_variables=template_variables)
+            self.api.create(title=title, description=description, graphs=graphs, template_variables=template_variables)
     def export_json(self, dash_id):
-        return self.api.Timeboard.get(dash_id)
+        return self.api.get(dash_id)
 
 class ScreenboardHandler(DashboardHandler):
 
@@ -60,9 +60,9 @@ class ScreenboardHandler(DashboardHandler):
         if update:
            raise Exception('Update not supported for screenboards')
         else:
-            self.api.Screenboard.create(board_title=board_title, widgets=widgets, template_variables=template_variables)
+            self.api.create(board_title=board_title, widgets=widgets, template_variables=template_variables)
     def export_json(self, dash_id):
-        return self.api.Screenboard.get(dash_id)
+        return self.api.get(dash_id)
 
 def main():
     logging.basicConfig(level=logging.INFO)
@@ -105,7 +105,7 @@ def main():
 
     authenticate(load_json(args.credentials))
 
-    handler = TimeboardHandler(dd_api) if args.dash_type == 't' else ScreenboardHandler(dd_api)
+    handler = TimeboardHandler(dd_api.Timeboard) if args.dash_type == 't' else ScreenboardHandler(dd_api.Screenboard)
 
     if args.import_file:
         handler.import_json(load_json(args.import_file), args.update)
