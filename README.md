@@ -51,9 +51,13 @@ optional arguments:
 
 These are the steps I used on Ubuntu 18.04.
 
-Add the following line to `~/.bashrc` (to avoid [this issue](https://github.com/pypa/pipenv/issues/2122)):
+Add the following lines to `~/.bashrc`:
 
+    # Due to https://github.com/pypa/pipenv/issues/2122
     export PATH="${HOME}/.local/bin:$PATH"
+
+    # Due to https://github.com/pypa/pipenv/issues/1382
+    export PIPENV_VENV_IN_PROJECT=true
 
 Install pip and pipenv:
 
