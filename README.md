@@ -69,4 +69,5 @@ Clone and install locally:
     git clone git@github.com:ouyi/dashjson.git
     cd dashjson
     pipenv install --dev
+    pipenv run python -m unittest
     pipenv run python dashjson.py -h
