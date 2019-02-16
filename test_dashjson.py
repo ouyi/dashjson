@@ -7,9 +7,13 @@ import json, textwrap
 
 class TestTimeboardHandler(TestCase):
 
+    def setUp(self):
+        self.api_mock = Mock()
+        self.handler = TimeboardHandler(self.api_mock)
+
+    def tearDown(self): pass
+
     def test_import_json(self):
-        api_mock = Mock()
-        handler = TimeboardHandler(api_mock)
         timeboard_str = textwrap.dedent('''\
             {
                 "dash": {
@@ -43,20 +47,17 @@ class TestTimeboardHandler(TestCase):
         dash_json = json.loads(timeboard_str)
 
         update = True
-        handler.import_json(dash_json, update)
-        api_mock.update.assert_called_with(4711, title='Test Timeboard Title', description='test timeboard description', graphs=dash_json['dash']['graphs'], template_variables=[])
+        self.handler.import_json(dash_json, update)
+        self.api_mock.update.assert_called_with(4711, title='Test Timeboard Title', description='test timeboard description', graphs=dash_json['dash']['graphs'], template_variables=[])
 
         update = False
-        handler.import_json(dash_json, update)
-        api_mock.create.assert_called_with(title='Test Timeboard Title', description='test timeboard description', graphs=dash_json['dash']['graphs'], template_variables=[])
+        self.handler.import_json(dash_json, update)
+        self.api_mock.create.assert_called_with(title='Test Timeboard Title', description='test timeboard description', graphs=dash_json['dash']['graphs'], template_variables=[])
 
     def test_export_json(self):
 
-        api_mock = Mock()
-        handler = TimeboardHandler(api_mock)
-        handler.export_json(4711)
-        api_mock.get.assert_called_once()
-
+        self.handler.export_json(4711)
+        self.api_mock.get.assert_called_once()
 
 if __name__ == '__main__':
     unittest.main()
