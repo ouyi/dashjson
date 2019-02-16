@@ -26,8 +26,8 @@ class DashboardHandler(object):
     @abstractmethod
     def import_json(self, dash_json, update): pass
 
-    @abstractmethod
-    def export_json(self, dash_id): pass
+    def export_json(self, dash_id):
+        return self.api.get(dash_id)
 
 class TimeboardHandler(DashboardHandler):
 
@@ -41,8 +41,6 @@ class TimeboardHandler(DashboardHandler):
             self.api.update(timeboard_json['id'], title=title, description=description, graphs=graphs, template_variables=template_variables)
         else:
             self.api.create(title=title, description=description, graphs=graphs, template_variables=template_variables)
-    def export_json(self, dash_id):
-        return self.api.get(dash_id)
 
 class ScreenboardHandler(DashboardHandler):
 
@@ -55,8 +53,6 @@ class ScreenboardHandler(DashboardHandler):
            raise Exception('Update not supported for screenboards')
         else:
             self.api.create(board_title=board_title, widgets=widgets, template_variables=template_variables)
-    def export_json(self, dash_id):
-        return self.api.get(dash_id)
 
 def main():
     logging.basicConfig(level=logging.INFO)
