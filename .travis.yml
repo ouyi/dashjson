@@ -1,0 +1,13 @@
+language: python
+python:
+  - "3.6"
+env:
+  global:
+    - PIPENV_VENV_IN_PROJECT=1
+    - PIPENV_IGNORE_VIRTUALENVS=1
+# command to install dependencies
+install: 
+  - python3 -m pip install pipenv
+  - pipenv install --dev
+# command to run tests
+script: pipenv run python -m unittest
