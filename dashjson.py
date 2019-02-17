@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import sys, logging, argparse, json, os.path
+import sys, logging, argparse, json, os.path, textwrap
 from datadog import initialize as dd_init, api as dd_api
 from abc import ABCMeta, abstractmethod
 
@@ -58,28 +58,26 @@ class ScreenboardHandler(DashboardHandler):
 
 def main():
     logging.basicConfig(level=logging.INFO)
-    parser = argparse.ArgumentParser(description=
-    """
-    A tool for exporting (or importing) Datadog dashboards to (or from) json files.
+    parser = argparse.ArgumentParser(description=textwrap.dedent('''\
+            A tool for exporting (or importing) Datadog dashboards to (or from) json files.
 
-    Examples
+            Examples
 
-    - Export to json
-    # python dashjson.py -e my_timeboard.json -d 12345
-    # python dashjson.py -e my_screenboard.json -d 12345 -t s
+            - Export to json
+            # python dashjson.py -e my_timeboard.json -d 12345
+            # python dashjson.py -e my_screenboard.json -d 12345 -t s
 
-    - Import from json
-    # python dashjson.py -i my_timeboard.json
-    # python dashjson.py -i my_screenboard.json -t s -n
+            - Import from json
+            # python dashjson.py -i my_timeboard.json
+            # python dashjson.py -i my_screenboard.json -t s -n
 
-    - Example content of the credentials file (your keys can be found at https://app.datadoghq.com/account/settings#api)
-    # cat ~/.dashjson.json
-    {
-        "api_key": "abcdefg12345678",
-        "app_key": "abcdefg987654321"
-    }
-    """, formatter_class=argparse.RawTextHelpFormatter
-    )
+            - Example content of the credentials file (your keys can be found at https://app.datadoghq.com/account/settings#api)
+            # cat ~/.dashjson.json
+            {
+                "api_key": "abcdefg12345678",
+                "app_key": "abcdefg987654321"
+            }
+            '''), formatter_class=argparse.RawTextHelpFormatter)
     parser.add_argument("-c", "--credentials", default=os.path.join(os.path.expanduser('~'), '.dashjson.json'), help="the json file containing api_key and app_key as dictionary entries, defaults to ~/.dashjson.json")
     mutex_group = parser.add_mutually_exclusive_group(required=True)
     mutex_group.add_argument("-i", "--import_file", help="the json file to import dashboard definition from")
