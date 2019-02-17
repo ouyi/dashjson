@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="dashjson",
-    version="0.1.3",
+    version="0.1.4",
     author="Yi Ou",
     author_email="dashjson.project@gmail.com",
     description="A tool for exporting (or importing) Datadog dashboards to (or from) json",
