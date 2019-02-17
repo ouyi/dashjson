@@ -53,3 +53,9 @@ Clone and install locally:
 1. Automatically determine the dashboard type
 
 For import, the information is available in the input file. For export, we can first [get a list of all screenboards](https://docs.datadoghq.com/api/?lang=python#get-all-screenboards) and then check existence by id.
+
+2. Embed a code coverage badge
+
+The coverage data can be generated with:
+
+    coverage run --source=dashjson -m unittest && coverage report && coverage-badge -f -o coverage.svg
