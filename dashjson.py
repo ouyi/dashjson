@@ -14,9 +14,6 @@ def dump_json(dash_json, f):
     with open(f, 'w') as json_file:
         json.dump(dash_json, json_file, indent=4)
 
-def authenticate(cred_json):
-    dd_init(**cred_json)
-
 class DashboardHandler(object):
     __metaclass__ = ABCMeta
 
@@ -24,37 +21,48 @@ class DashboardHandler(object):
         self.api = api
 
     @abstractmethod
-    def import_json(self, dash_json, update): pass
+    def import_json(self, dash_json, new_board): pass
 
-    def export_json(self, dash_id):
-        return self.api.get(dash_id)
+    def export_json(self, board_id):
+        return self.api.get(board_id)
 
 class TimeboardHandler(DashboardHandler):
 
-    def import_json(self, dash_json, update):
+    def import_json(self, dash_json, new_board):
         timeboard_json = dash_json['dash']
         # required fields
         title, description, graphs = timeboard_json['title'], timeboard_json['description'], timeboard_json['graphs']
         # optional fields
         template_variables = timeboard_json.get('template_variables')
         template_variables = template_variables if template_variables else []
-        if update:
-            self.api.update(timeboard_json['id'], title=title, description=description, graphs=graphs, template_variables=template_variables)
-        else:
+        if new_board:
             self.api.create(title=title, description=description, graphs=graphs, template_variables=template_variables)
+        else:
+            self.api.update(timeboard_json['id'], title=title, description=description, graphs=graphs, template_variables=template_variables)
 
 class ScreenboardHandler(DashboardHandler):
 
-    def import_json(self, dash_json, update):
+    def import_json(self, dash_json, new_board):
         # required fields
         board_title, widgets = dash_json['board_title'], dash_json['widgets']
         # optional fields
         template_variables = dash_json.get('template_variables')
         template_variables = template_variables if template_variables else []
-        if update:
-            self.api.update(dash_json['id'], board_title=board_title, widgets=widgets, template_variables=template_variables)
-        else:
+        if new_board:
             self.api.create(board_title=board_title, widgets=widgets, template_variables=template_variables)
+        else:
+            self.api.update(dash_json['id'], board_title=board_title, widgets=widgets, template_variables=template_variables)
+
+def create_handler(cred_file, board_type):
+    cred = load_json(cred_file)
+    dd_init(**cred)
+    return TimeboardHandler(dd_api.Timeboard) if board_type == 't' else ScreenboardHandler(dd_api.Screenboard)
+
+def fromjson(args):
+    create_handler(args.credentials, args.board_type).import_json(load_json(args.json_file), args.new_board)
+
+def tojson(args):
+    dump_json(create_handler(args.credentials, args.board_type).export_json(args.board_id), args.json_file)
 
 def main():
     logging.basicConfig(level=logging.INFO)
@@ -64,12 +72,16 @@ def main():
             Examples:
 
             - Export to json (the id can be found in the dashboard URL, normally numeric or alphanumeric)
-            # python dashjson.py -e my_timeboard.json -d xyz-123-abc
-            # python dashjson.py -e my_screenboard.json -d 12345 -t s
+            # python dashjson.py tojson -b xyz-123-abc my_timeboard.json
+            # python dashjson.py -t s tojson -b 584086 my_screenboard.json
 
             - Import from json
-            # python dashjson.py -i my_timeboard.json
-            # python dashjson.py -i my_screenboard.json -t s -n
+            # python dashjson.py fromjson my_timeboard.json
+            # python dashjson.py -t s fromjson my_screenboard.json
+
+            - Import from json creating new dashboard
+            # python dashjson.py fromjson -n my_timeboard.json
+            # python dashjson.py -t s fromjson -n my_screenboard.json
 
             - Example content of the credentials file (your keys can be found at https://app.datadoghq.com/account/settings#api)
             # cat ~/.dashjson.json
@@ -77,30 +89,24 @@ def main():
                 "api_key": "abcdefg12345678",
                 "app_key": "abcdefg987654321"
             }
-            '''), formatter_class=argparse.RawTextHelpFormatter)
-    parser.add_argument("-c", "--credentials", default=os.path.join(os.path.expanduser('~'), '.dashjson.json'), help="the json file containing api_key and app_key as dictionary entries, defaults to ~/.dashjson.json")
-    mutex_group = parser.add_mutually_exclusive_group(required=True)
-    mutex_group.add_argument("-i", "--import_file", help="the json file to import dashboard definition from")
-    mutex_group.add_argument("-e", "--export_file", help="the json file to export dashboard definition to")
-    parser.add_argument("-d", "--dash_id", help="the id of the dashboard to be exported")
-    parser.add_argument("-t", "--dash_type", choices=['t', 's'], default='t', help="the type of the dashboard (t for timeboard and s for screenboard) to be imported or exported, default to t")
-    parser.add_argument("-u", "--update", dest='update', action='store_true', help="update an existing timeboard (used in combination with -i, default for Timeboards))")
-    parser.add_argument("-n", "--no-update", dest='update', action='store_false', help="create a new dashboard (used in combination with -i)")
-    parser.set_defaults(update=True)
+            '''), formatter_class=argparse.RawTextHelpFormatter, allow_abbrev=True)
+    parser.add_argument("-c", "--credentials", default=os.path.join(os.path.expanduser('~'), ".dashjson.json"), help="the json file containing api_key and app_key as dictionary entries, defaults to ~/.dashjson.json")
+    parser.add_argument("-t", "--board-type", choices=['t', 's'], default='t', help="the type of the dashboard (t for timeboard and s for screenboard) to be imported or exported, default to t")
+
+    subparsers = parser.add_subparsers(title="subcommands", description="valid subcommands", help="run `python dashjson.py <subcommand> -h` for usage on a subcommand")
+
+    subparser_tojson = subparsers.add_parser("tojson", help="tojson help")
+    subparser_tojson.add_argument("-b", "--board-id", help="the id of the dashboard to be exported")
+    subparser_tojson.set_defaults(func=tojson)
+
+    subparser_fromjson = subparsers.add_parser("fromjson", help="fromjson help")
+    subparser_fromjson.add_argument("-n", "--new-board", action='store_true', help="Create a new dashboard, without updating the existing one specified in the json file)")
+    subparser_fromjson.set_defaults(func=fromjson)
+
+    parser.add_argument("json_file")
+
     args = parser.parse_args()
-
-    if args.export_file and not args.dash_id:
-       parser.print_help()
-       sys.exit(1)
-
-    authenticate(load_json(args.credentials))
-
-    handler = TimeboardHandler(dd_api.Timeboard) if args.dash_type == 't' else ScreenboardHandler(dd_api.Screenboard)
-
-    if args.import_file:
-        handler.import_json(load_json(args.import_file), args.update)
-    elif args.export_file:
-        dump_json(handler.export_json(args.dash_id), args.export_file)
+    args.func(args)
 
 if __name__ == "__main__":
     main()
