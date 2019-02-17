@@ -50,7 +50,7 @@ class ScreenboardHandler(DashboardHandler):
         # optional fields
         template_variables = dash_json.get('template_variables', [])
         if update:
-           raise Exception('Update not supported for screenboards')
+            raise Exception('Update not supported for screenboards')
         else:
             self.api.create(board_title=board_title, widgets=widgets, template_variables=template_variables)
 
