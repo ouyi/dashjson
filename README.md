@@ -45,3 +45,9 @@ Clone and install locally:
     pipenv install --dev
     pipenv run python -m unittest
     pipenv run python dashjson.py -h
+
+## TODOs
+
+1. Automatically determine the dashboard type
+
+For import, the information is available in the input file. For export, we can first [get a list of all screenboards](https://docs.datadoghq.com/api/?lang=python#get-all-screenboards) and then check existence by id.

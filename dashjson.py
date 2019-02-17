@@ -61,10 +61,10 @@ def main():
     parser = argparse.ArgumentParser(description=textwrap.dedent('''\
             A tool for exporting (or importing) Datadog dashboards to (or from) json files.
 
-            Examples
+            Examples:
 
-            - Export to json
-            # python dashjson.py -e my_timeboard.json -d 12345
+            - Export to json (the id can be found in the dashboard URL, normally numeric or alphanumeric)
+            # python dashjson.py -e my_timeboard.json -d xyz-123-abc
             # python dashjson.py -e my_screenboard.json -d 12345 -t s
 
             - Import from json
