@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/ouyi/dashjson.svg?branch=master)](https://travis-ci.org/ouyi/dashjson)
+
 # dashjson.py -- a Datadog tool
 
 A tool for exporting (or importing) Datadog dashboards to (or from) json. It allows the Datadog dashboard definitions to be
