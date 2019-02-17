@@ -101,10 +101,16 @@ class TestScreenboardHandler(TestCase):
                     "id": 4711
                 }
                 ''')
+
         dash_json = json.loads(screenboard_str)
-        self.handler.fromjson(dash_json, True)
+
+        new_board = False
+        self.handler.fromjson(dash_json, new_board)
+        self.api_mock.update.assert_called_with(4711, board_title='Test Screenboard Title', widgets=dash_json['widgets'], template_variables=[])
+
+        new_board = True
+        self.handler.fromjson(dash_json, new_board)
         self.api_mock.create.assert_called_with(board_title='Test Screenboard Title', widgets=dash_json['widgets'], template_variables=[])
-        pass
 
     def test_tojson(self):
         self.handler.tojson(4711)
