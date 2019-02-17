@@ -36,7 +36,8 @@ class TimeboardHandler(DashboardHandler):
         # required fields
         title, description, graphs = timeboard_json['title'], timeboard_json['description'], timeboard_json['graphs']
         # optional fields
-        template_variables = timeboard_json.get('template_variables', [])
+        template_variables = timeboard_json.get('template_variables')
+        template_variables = template_variables if template_variables else []
         if update:
             self.api.update(timeboard_json['id'], title=title, description=description, graphs=graphs, template_variables=template_variables)
         else:
@@ -48,9 +49,10 @@ class ScreenboardHandler(DashboardHandler):
         # required fields
         board_title, widgets = dash_json['board_title'], dash_json['widgets']
         # optional fields
-        template_variables = dash_json.get('template_variables', [])
+        template_variables = dash_json.get('template_variables')
+        template_variables = template_variables if template_variables else []
         if update:
-            raise Exception('Update not supported for screenboards')
+            self.api.update(dash_json['id'], board_title=board_title, widgets=widgets, template_variables=template_variables)
         else:
             self.api.create(board_title=board_title, widgets=widgets, template_variables=template_variables)
 
@@ -84,7 +86,7 @@ def main():
     mutex_group.add_argument("-e", "--export_file", help="the json file to export dashboard definition to")
     parser.add_argument("-d", "--dash_id", help="the id of the dashboard to be exported")
     parser.add_argument("-t", "--dash_type", choices=['t', 's'], default='t', help="the type of the dashboard (t for timeboard and s for screenboard) to be imported or exported, default to t")
-    parser.add_argument("-u", "--update", dest='update', action='store_true', help="update an existing timeboard (used in combination with -i, default for Timeboards, not supported for screenboards))")
+    parser.add_argument("-u", "--update", dest='update', action='store_true', help="update an existing timeboard (used in combination with -i, default for Timeboards))")
     parser.add_argument("-n", "--no-update", dest='update', action='store_false', help="create a new dashboard (used in combination with -i)")
     parser.set_defaults(update=True)
     args = parser.parse_args()
