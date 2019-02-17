@@ -12,7 +12,8 @@ setuptools.setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/ouyi/dashjson",
-    packages=['dashjson'],
+    packages=setuptools.find_packages(),
+    py_modules=['dashjson'],
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
