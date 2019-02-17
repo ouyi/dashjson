@@ -93,17 +93,17 @@ def main():
     parser.add_argument("-c", "--credentials", default=os.path.join(os.path.expanduser('~'), ".dashjson.json"), help="the json file containing api_key and app_key as dictionary entries, defaults to ~/.dashjson.json")
     parser.add_argument("-t", "--board-type", choices=['t', 's'], default='t', help="the type of the dashboard (t for timeboard and s for screenboard) to be imported or exported, default to t")
 
-    subparsers = parser.add_subparsers(title="subcommands", description="valid subcommands", help="run `python dashjson.py <subcommand> -h` for usage on a subcommand")
+    subparsers = parser.add_subparsers(title="subcommands", description="run `python dashjson.py <subcommand> -h` for usage on a subcommand", help="valid subcommands")
 
-    subparser_tojson = subparsers.add_parser("tojson", help="tojson help")
+    subparser_tojson = subparsers.add_parser("tojson", help="export a dashboard to a json file")
     subparser_tojson.add_argument("-b", "--board-id", help="the id of the dashboard to be exported")
+    subparser_tojson.add_argument("json_file", help="the json file to be written to")
     subparser_tojson.set_defaults(func=tojson)
 
-    subparser_fromjson = subparsers.add_parser("fromjson", help="fromjson help")
-    subparser_fromjson.add_argument("-n", "--new-board", action='store_true', help="Create a new dashboard, without updating the existing one specified in the json file)")
+    subparser_fromjson = subparsers.add_parser("fromjson", help="import a dashboard from a json file")
+    subparser_fromjson.add_argument("-n", "--new-board", action='store_true', help="create a new dashboard, without updating the existing one specified in the json file)")
+    subparser_fromjson.add_argument("json_file", help="the json file to be read from")
     subparser_fromjson.set_defaults(func=fromjson)
-
-    parser.add_argument("json_file")
 
     args = parser.parse_args()
     args.func(args)
