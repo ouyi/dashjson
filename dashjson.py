@@ -21,14 +21,14 @@ class DashboardHandler(object):
         self.api = api
 
     @abstractmethod
-    def import_json(self, dash_json, new_board): pass
+    def fromjson(self, dash_json, new_board): pass
 
-    def export_json(self, board_id):
+    def tojson(self, board_id):
         return self.api.get(board_id)
 
 class TimeboardHandler(DashboardHandler):
 
-    def import_json(self, dash_json, new_board):
+    def fromjson(self, dash_json, new_board):
         timeboard_json = dash_json['dash']
         # required fields
         title, description, graphs = timeboard_json['title'], timeboard_json['description'], timeboard_json['graphs']
@@ -42,7 +42,7 @@ class TimeboardHandler(DashboardHandler):
 
 class ScreenboardHandler(DashboardHandler):
 
-    def import_json(self, dash_json, new_board):
+    def fromjson(self, dash_json, new_board):
         # required fields
         board_title, widgets = dash_json['board_title'], dash_json['widgets']
         # optional fields
@@ -59,10 +59,10 @@ def create_handler(cred_file, board_type):
     return TimeboardHandler(dd_api.Timeboard) if board_type == 't' else ScreenboardHandler(dd_api.Screenboard)
 
 def fromjson(args):
-    create_handler(args.credentials, args.board_type).import_json(load_json(args.json_file), args.new_board)
+    create_handler(args.credentials, args.board_type).fromjson(load_json(args.json_file), args.new_board)
 
 def tojson(args):
-    dump_json(create_handler(args.credentials, args.board_type).export_json(args.board_id), args.json_file)
+    dump_json(create_handler(args.credentials, args.board_type).tojson(args.board_id), args.json_file)
 
 def main():
     logging.basicConfig(level=logging.INFO)

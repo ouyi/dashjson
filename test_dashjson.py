@@ -13,7 +13,7 @@ class TestTimeboardHandler(TestCase):
 
     def tearDown(self): pass
 
-    def test_import_json(self):
+    def test_fromjson(self):
         timeboard_str = textwrap.dedent('''\
                 {
                     "dash": {
@@ -48,16 +48,16 @@ class TestTimeboardHandler(TestCase):
         dash_json = json.loads(timeboard_str)
 
         new_board = False
-        self.handler.import_json(dash_json, new_board)
+        self.handler.fromjson(dash_json, new_board)
         self.api_mock.update.assert_called_with(4711, title='Test Timeboard Title', description='test timeboard description', graphs=dash_json['dash']['graphs'], template_variables=[])
 
         new_board = True
-        self.handler.import_json(dash_json, new_board)
+        self.handler.fromjson(dash_json, new_board)
         self.api_mock.create.assert_called_with(title='Test Timeboard Title', description='test timeboard description', graphs=dash_json['dash']['graphs'], template_variables=[])
 
-    def test_export_json(self):
-        self.handler.export_json(4711)
-        self.api_mock.get.assert_called_once()
+    def test_tojson(self):
+        self.handler.tojson(4711)
+        self.api_mock.get.assert_called_once_with(4711)
 
 class TestScreenboardHandler(TestCase):
 
@@ -67,7 +67,7 @@ class TestScreenboardHandler(TestCase):
 
     def tearDown(self): pass
 
-    def test_import_json(self):
+    def test_fromjson(self):
         screenboard_str = textwrap.dedent('''\
                 {
                     "board_title": "Test Screenboard Title",
@@ -102,13 +102,13 @@ class TestScreenboardHandler(TestCase):
                 }
                 ''')
         dash_json = json.loads(screenboard_str)
-        self.handler.import_json(dash_json, True)
+        self.handler.fromjson(dash_json, True)
         self.api_mock.create.assert_called_with(board_title='Test Screenboard Title', widgets=dash_json['widgets'], template_variables=[])
         pass
 
-    def test_export_json(self):
-        self.handler.export_json(4711)
-        self.api_mock.get.assert_called_once()
+    def test_tojson(self):
+        self.handler.tojson(4711)
+        self.api_mock.get.assert_called_once_with(4711)
 
 if __name__ == '__main__':
     unittest.main()
