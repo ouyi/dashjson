@@ -14,6 +14,7 @@ setuptools.setup(
     url="https://github.com/ouyi/dashjson",
     packages=setuptools.find_packages(),
     py_modules=['dashjson'],
+    install_requires=['datadog>=0.26.0'],
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
