@@ -19,9 +19,13 @@ Create the credentials file containing the api\_key and the app\_key. Example co
         "app_key": "abcdefg987654321"
     }
 
+Install via pip:
+
+    python3 -m pip install --user dashjson
+
 Show usage of the tool:
 
-    python dashjson.py -h
+    python3 -m dashjson -h
 
 ## How to build (for contributors only)
 
@@ -40,13 +44,25 @@ Install pip and pipenv:
     sudo apt install python3-pip
     python3 -m pip install --user pipenv
 
-Clone and install locally:
+Clone and set up the project locally:
 
     git clone git@github.com:ouyi/dashjson.git
     cd dashjson
     pipenv install --dev
     pipenv run python -m unittest
     pipenv run python dashjson.py -h
+
+Upload a release:
+
+    rm -rf build/ dist/
+    python setup.py sdist bdist_wheel
+    pip install . -vvv
+    python -m dashjson -h
+    vim setup.py # bump version
+    git add setup.py && git commit -m "Bump version"
+    git tag -a my_tag -m "My message"
+    git push origin master && git push origin --tags
+    python -m twine upload dist/*
 
 ## TODOs
 
@@ -59,3 +75,5 @@ For import, the information is available in the input file. For export, we can f
 The coverage data can be generated with:
 
     coverage run --source=dashjson -m unittest && coverage report && coverage-badge -f -o coverage.svg
+
+3. Automate the release process
