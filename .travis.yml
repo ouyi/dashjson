@@ -9,4 +9,7 @@ install:
   - python3 -m pip install pipenv
   - pipenv install --dev
 # command to run tests
-script: pipenv run python -m unittest
+script:
+  - pipenv run python -m unittest
+  - pip install .
+  - python3 -m dashjson -h
