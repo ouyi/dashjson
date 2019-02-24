@@ -1,9 +1,11 @@
 #!/usr/bin/env python
 
-from unittest import TestCase
+from unittest import TestCase, main
 from unittest.mock import Mock
 from dashjson import TimeboardHandler, ScreenboardHandler
-import json, textwrap
+import json
+import textwrap
+
 
 class TestTimeboardHandler(TestCase):
 
@@ -11,7 +13,8 @@ class TestTimeboardHandler(TestCase):
         self.api_mock = Mock()
         self.handler = TimeboardHandler(self.api_mock)
 
-    def tearDown(self): pass
+    def tearDown(self):
+        pass
 
     def test_fromjson(self):
         timeboard_str = textwrap.dedent('''\
@@ -59,13 +62,15 @@ class TestTimeboardHandler(TestCase):
         self.handler.tojson(4711)
         self.api_mock.get.assert_called_once_with(4711)
 
+
 class TestScreenboardHandler(TestCase):
 
     def setUp(self):
         self.api_mock = Mock()
         self.handler = ScreenboardHandler(self.api_mock)
 
-    def tearDown(self): pass
+    def tearDown(self):
+        pass
 
     def test_fromjson(self):
         screenboard_str = textwrap.dedent('''\
@@ -116,5 +121,6 @@ class TestScreenboardHandler(TestCase):
         self.handler.tojson(4711)
         self.api_mock.get.assert_called_once_with(4711)
 
+
 if __name__ == '__main__':
-    unittest.main()
+    main()

@@ -1,8 +1,13 @@
 #!/usr/bin/env python
 
-import sys, logging, argparse, json, os.path, textwrap
+import logging
+import argparse
+import json
+import os.path
+import textwrap
 from datadog import initialize as dd_init, api as dd_api
 from abc import ABCMeta, abstractmethod
+
 
 def load_json(f):
     with open(f, 'r') as json_file:
@@ -10,9 +15,11 @@ def load_json(f):
         json_obj = json.loads(json_str)
         return json_obj
 
+
 def dump_json(dash_json, f):
     with open(f, 'w') as json_file:
         json.dump(dash_json, json_file, indent=4)
+
 
 class DashboardHandler(object):
     __metaclass__ = ABCMeta
@@ -21,10 +28,12 @@ class DashboardHandler(object):
         self.api = api
 
     @abstractmethod
-    def fromjson(self, dash_json, new_board): pass
+    def fromjson(self, dash_json, new_board):
+        pass
 
     def tojson(self, board_id):
         return self.api.get(board_id)
+
 
 class TimeboardHandler(DashboardHandler):
 
@@ -40,6 +49,7 @@ class TimeboardHandler(DashboardHandler):
         else:
             self.api.update(timeboard_json['id'], title=title, description=description, graphs=graphs, template_variables=template_variables)
 
+
 class ScreenboardHandler(DashboardHandler):
 
     def fromjson(self, dash_json, new_board):
@@ -53,16 +63,20 @@ class ScreenboardHandler(DashboardHandler):
         else:
             self.api.update(dash_json['id'], board_title=board_title, widgets=widgets, template_variables=template_variables)
 
+
 def create_handler(cred_file, board_type):
     cred = load_json(cred_file)
     dd_init(**cred)
     return TimeboardHandler(dd_api.Timeboard) if board_type == 't' else ScreenboardHandler(dd_api.Screenboard)
 
+
 def fromjson(args):
     create_handler(args.credentials, args.board_type).fromjson(load_json(args.json_file), args.new_board)
 
+
 def tojson(args):
     dump_json(create_handler(args.credentials, args.board_type).tojson(args.board_id), args.json_file)
+
 
 def main():
     logging.basicConfig(level=logging.INFO)
@@ -107,6 +121,7 @@ def main():
 
     args = parser.parse_args()
     args.func(args)
+
 
 if __name__ == "__main__":
     main()

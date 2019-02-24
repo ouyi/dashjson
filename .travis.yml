@@ -12,4 +12,5 @@ install:
 script:
   - pipenv run python -m unittest
   - pip install .
+  - flake8 *.py
   - python3 -m dashjson -h
