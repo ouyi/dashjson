@@ -22,6 +22,7 @@ Create the credentials file containing the api\_key and the app\_key. Example co
 
 Install via pip:
 
+    sudo apt install python3-pip
     python3 -m pip install --user dashjson
 
 Show usage of the tool:
