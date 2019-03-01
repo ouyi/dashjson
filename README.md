@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/ouyi/dashjson.svg?branch=master)](https://travis-ci.org/ouyi/dashjson)
+[![Downloads](https://pepy.tech/badge/dashjson/week)](https://pepy.tech/project/dashjson)
 
 # dashjson.py -- a Datadog tool
 
