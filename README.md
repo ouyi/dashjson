@@ -1,14 +1,10 @@
 [![Build Status](https://travis-ci.org/ouyi/dashjson.svg?branch=master)](https://travis-ci.org/ouyi/dashjson)
-[![Downloads](https://pepy.tech/badge/dashjson/week)](https://pepy.tech/project/dashjson)
+[![Downloads](https://pepy.tech/badge/dashjson)](https://pepy.tech/project/dashjson)
 
-# dashjson.py -- a Datadog tool
-
-A tool for exporting (or importing) Datadog dashboards to (or from) json. It allows the Datadog dashboard definitions to be
+`dashjson` is a tool for exporting (or importing) Datadog dashboards to (or from) json. It allows the Datadog dashboard definitions to be
 
 - version controlled as json files, and
 - migrated across Datadog accounts
-
-Tested with Python 3.6.7 and datadog 0.26.0.
 
 ## How to use
 
@@ -31,7 +27,7 @@ Show usage of the tool:
 
 ## How to build (for contributors only)
 
-These are the steps I used on Ubuntu 18.04.
+These are the steps I used on Ubuntu 18.04 with Python 3.6.7 and datadogpy 0.26.0.
 
 Add the following lines to `~/.bashrc`:
 
