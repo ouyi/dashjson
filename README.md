@@ -39,7 +39,8 @@ Add the following lines to `~/.bashrc`:
 
 Install pip and pipenv:
 
-    sudo apt install python3-pip
+    sudo apt install python3-pip # or the following command for updating pip to the latest version if it is already installed
+    sudo python3 -m pip install --upgrade pip
     python3 -m pip install --user pipenv
 
 Clone and set up the project locally:
