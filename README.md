@@ -1,5 +1,5 @@
 [![Build Status](https://travis-ci.org/ouyi/dashjson.svg?branch=master)](https://travis-ci.org/ouyi/dashjson)
-[![Downloads](https://pepy.tech/badge/dashjson)](https://pepy.tech/project/dashjson)
+[![Downloads](https://www.pepy.tech/badge/dashjson)](https://www.pepy.tech/project/dashjson)
 
 `dashjson` is a tool for exporting (or importing) Datadog dashboards to (or from) json. It allows the Datadog dashboard definitions to be
 
