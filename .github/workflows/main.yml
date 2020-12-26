@@ -20,7 +20,7 @@ jobs:
         run: |
           python3 -m pip install pipenv
           pipenv install --dev
+          pipenv run flake8 *.py
           pipenv run python -m unittest
           pip install .
-          flake8 *.py
           python3 -m dashjson -h
