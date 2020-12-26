@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [ '3.x', 'pypy-3.x' ]
+        python-version: [ '3.x', 'pypy-3.6', 'pypy-3.7' ]
     steps:
       - name: Git checkout
         uses: actions/checkout@v2
